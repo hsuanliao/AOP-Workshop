@@ -12,6 +12,15 @@ namespace MyWalletLibTests
         private Wallet _wallet;
         private IWalletRepo _walletRepo;
 
+        [Test]
+        public void deposit_from_banking_account_to_wallet_successfully()
+        {
+            _wallet.Deposit("123456789", 1000m, "joey");
+
+            _bankingAdapter.Received(1).Deposit("123456789", 1000);
+            _walletRepo.Received(1).UpdateDelta("joey", 1000);
+        }
+
         [SetUp]
         public void Setup()
         {
