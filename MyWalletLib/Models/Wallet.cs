@@ -2,7 +2,7 @@
 
 namespace MyWalletLib.Models
 {
-    [Intercept(typeof(LogInterceptorInLib))]
+    //[Intercept(typeof(LogInterceptorInLib))]
     public class Wallet : IWallet
     {
         private readonly IBanking _bankingAdapter;

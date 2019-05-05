@@ -1,6 +1,7 @@
 ﻿using System;
 using Autofac;
 using Autofac.Extras.DynamicProxy;
+using MyConsole.Interceptors;
 using MyWalletLib;
 using MyWalletLib.Models;
 
@@ -88,10 +89,16 @@ namespace MyConsole
             //builder.RegisterType<Wallet>().As<IWallet>();
             //builder.RegisterDecorator<LoggerDecorator, IWallet>();
 
-            builder.RegisterType<LogInterceptorInLib>();
+            //builder.RegisterType<LogInterceptorInLib>();
+            //builder.RegisterType<Wallet>()
+            //    .As<IWallet>()
+            //    .EnableInterfaceInterceptors();
+
+            builder.RegisterType<LogInterceptor>();
             builder.RegisterType<Wallet>()
                 .As<IWallet>()
-                .EnableInterfaceInterceptors();
+                .EnableInterfaceInterceptors()
+                .InterceptedBy(typeof(LogInterceptor));
 
             _container = builder.Build();
         }
