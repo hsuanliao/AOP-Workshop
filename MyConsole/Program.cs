@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Transactions;
 using Autofac;
 using Autofac.Extras.DynamicProxy;
 using MyConsole.Interceptors;
@@ -7,6 +8,28 @@ using MyWalletLib.Models;
 
 namespace MyConsole
 {
+    public class TransactionScopeAdapter : ITransactionScope
+    {
+        private readonly TransactionScope _transactionScope;
+
+        public TransactionScopeAdapter()
+        {
+            _transactionScope = new TransactionScope();
+        }
+
+        public void Complete()
+        {
+            Console.WriteLine("transaction complete");
+            _transactionScope.Complete();
+        }
+
+        public void Dispose()
+        {
+            Console.WriteLine("transaction dispose");
+            _transactionScope.Dispose();
+        }
+    }
+
     internal class FakeBankingAdapter : IBanking
     {
         public void Deposit(string bankingAccount, decimal amount)
@@ -45,6 +68,14 @@ namespace MyConsole
         }
     }
 
+    internal class FakeNotification : INotification
+    {
+        public void Push(Role role, string message)
+        {
+            Console.WriteLine($"{role}, transaction ex:{message}");
+        }
+    }
+
     internal class FakeWalletRepo : IWalletRepo
     {
         public void UpdateDelta(string account, decimal amount)
@@ -55,7 +86,7 @@ namespace MyConsole
 
     internal class Program
     {
-        private static IContainer _container;
+        public static IContainer _container;
 
         private static void Main(string[] args)
         {
@@ -81,6 +112,9 @@ namespace MyConsole
             Console.WriteLine(new string('-', 50));
 
             wallet.Withdraw("joey", 1000, "123456789");
+            Console.WriteLine(new string('-', 50));
+
+            wallet.Withdraw("transaction error", 1000, "123456789");
         }
 
         private static void RegisterContainer()
@@ -93,6 +127,8 @@ namespace MyConsole
             builder.RegisterType<FakeLogger>().As<ILogger>();
             builder.RegisterType<FakeContext>().As<IContext>();
             builder.RegisterType<MemoryCacheProvider>().As<ICacheProvider>();
+            builder.RegisterType<TransactionScopeAdapter>().As<ITransactionScope>();
+            builder.RegisterType<FakeNotification>().As<INotification>();
 
             //builder.RegisterType<Wallet>().As<IWallet>();
             //builder.RegisterDecorator<LoggerDecorator, IWallet>();
@@ -105,13 +141,15 @@ namespace MyConsole
             builder.RegisterType<LogInterceptor>();
             builder.RegisterType<AuthorizationInterceptor>();
             builder.RegisterType<CacheInterceptor>();
+            builder.RegisterType<TransactionInterceptor>();
             builder.RegisterType<Wallet>()
                 .As<IWallet>()
                 .EnableInterfaceInterceptors()
                 .InterceptedBy(
                     typeof(LogInterceptor),
                     typeof(AuthorizationInterceptor),
-                    typeof(CacheInterceptor));
+                    typeof(CacheInterceptor),
+                    typeof(TransactionInterceptor));
 
             _container = builder.Build();
         }

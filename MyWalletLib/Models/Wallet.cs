@@ -35,8 +35,14 @@ namespace MyWalletLib.Models
         }
 
         [LogParameters]
+        [Transaction(Role.DBA)]
         public void Withdraw(string account, decimal amount, string bankingAccount)
         {
+            if (account.Equals("transaction error"))
+            {
+                throw new TransactionAbortedException();
+            }
+
             _walletRepo.UpdateDelta(account, amount * -1);
             var fee = _feeAdapter.GetFee(account);
             _bankingAdapter.Withdraw(bankingAccount, amount - fee);
