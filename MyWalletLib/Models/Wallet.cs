@@ -1,5 +1,8 @@
-﻿namespace MyWalletLib.Models
+﻿using Autofac.Extras.DynamicProxy;
+
+namespace MyWalletLib.Models
 {
+    [Intercept(typeof(LogInterceptorInLib))]
     public class Wallet : IWallet
     {
         private readonly IBanking _bankingAdapter;
@@ -13,12 +16,14 @@
             _feeAdapter = feeAdapter;
         }
 
+        [LogParameters]
         public void Deposit(string bankingAccount, decimal amount, string account)
         {
             _bankingAdapter.Deposit(bankingAccount, amount);
             _walletRepo.UpdateDelta(account, amount);
         }
 
+        [LogParameters]
         public void Withdraw(string account, decimal amount, string bankingAccount)
         {
             _walletRepo.UpdateDelta(account, amount * -1);

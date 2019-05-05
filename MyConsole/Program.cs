@@ -1,5 +1,6 @@
 ﻿using System;
 using Autofac;
+using Autofac.Extras.DynamicProxy;
 using MyWalletLib;
 using MyWalletLib.Models;
 
@@ -15,6 +16,14 @@ namespace MyConsole
         public void Withdraw(string bankingAccount, decimal amount)
         {
             Console.WriteLine($"{nameof(Withdraw)}({bankingAccount}, {amount})");
+        }
+    }
+
+    internal class FakeContext : IContext
+    {
+        public Account GetCurrentUser()
+        {
+            return new Account { Id = "test" };
         }
     }
 
@@ -59,7 +68,7 @@ namespace MyConsole
 
             RegisterContainer();
 
-            IWallet wallet = _container.Resolve<IWallet>();
+            var wallet = _container.Resolve<IWallet>();
 
             wallet.Deposit("joey", 1000, "123456789");
             Console.WriteLine(new string('-', 50));
@@ -74,10 +83,15 @@ namespace MyConsole
             builder.RegisterType<FakeBankingAdapter>().As<IBanking>();
             builder.RegisterType<FakeFeeAdapter>().As<IFee>();
             builder.RegisterType<FakeLogger>().As<ILogger>();
+            builder.RegisterType<FakeContext>().As<IContext>();
 
-            builder.RegisterType<Wallet>().As<IWallet>();
+            //builder.RegisterType<Wallet>().As<IWallet>();
+            //builder.RegisterDecorator<LoggerDecorator, IWallet>();
 
-            builder.RegisterDecorator<LoggerDecorator, IWallet>();
+            builder.RegisterType<LogInterceptorInLib>();
+            builder.RegisterType<Wallet>()
+                .As<IWallet>()
+                .EnableInterfaceInterceptors();
 
             _container = builder.Build();
         }
