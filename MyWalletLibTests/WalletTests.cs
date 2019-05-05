@@ -10,8 +10,7 @@ namespace MyWalletLibTests
     {
         private IBanking _bankingAdapter;
         private IFee _feeAdapter;
-        private ILogger _logger;
-        private Wallet _wallet;
+        private IWallet _wallet;
         private IWalletRepo _walletRepo;
 
         [Test]
@@ -29,9 +28,9 @@ namespace MyWalletLibTests
             _walletRepo = Substitute.For<IWalletRepo>();
             _bankingAdapter = Substitute.For<IBanking>();
             _feeAdapter = Substitute.For<IFee>();
-            _logger = Substitute.For<ILogger>();
+            Substitute.For<ILogger>();
 
-            _wallet = new Wallet(_walletRepo, _bankingAdapter, _feeAdapter, _logger);
+            _wallet = new Wallet(_walletRepo, _bankingAdapter, _feeAdapter);
         }
 
         [Test]

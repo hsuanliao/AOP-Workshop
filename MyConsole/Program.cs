@@ -51,11 +51,12 @@ namespace MyConsole
             var fakeFeeAdapter = new FakeFeeAdapter();
             var fakeLogger = new FakeLogger();
 
-            var wallet = new Wallet(fakeWalletRepo, fakeBankingAdapter, fakeFeeAdapter, fakeLogger);
+            var wallet = new Wallet(fakeWalletRepo, fakeBankingAdapter, fakeFeeAdapter);
+            var loggerWallet = new LoggerDecorator(wallet, fakeLogger);
 
-            wallet.Deposit("joey", 1000, "123456789");
+            loggerWallet.Deposit("joey", 1000, "123456789");
             Console.WriteLine(new string('-', 50));
-            wallet.Withdraw("joey", 1000, "123456789");
+            loggerWallet.Withdraw("joey", 1000, "123456789");
         }
     }
 }
