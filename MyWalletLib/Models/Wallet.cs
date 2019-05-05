@@ -3,12 +3,14 @@
     public class Wallet
     {
         private readonly IBanking _bankingAdapter;
+        private readonly IFee _feeAdapter;
         private readonly IWalletRepo _walletRepo;
 
-        public Wallet(IWalletRepo walletRepo, IBanking bankingAdapter)
+        public Wallet(IWalletRepo walletRepo, IBanking bankingAdapter, IFee feeAdapter)
         {
             _walletRepo = walletRepo;
             _bankingAdapter = bankingAdapter;
+            _feeAdapter = feeAdapter;
         }
 
         public void Deposit(string bankingAccount, decimal amount, string account)
@@ -20,7 +22,8 @@
         public void Withdraw(string account, decimal amount, string bankingAccount)
         {
             _walletRepo.UpdateDelta(account, amount * -1);
-            _bankingAdapter.Withdraw(bankingAccount, amount);
+            var fee = _feeAdapter.GetFee(account);
+            _bankingAdapter.Withdraw(bankingAccount, amount - fee);
         }
     }
 }
