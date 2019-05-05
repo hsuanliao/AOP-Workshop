@@ -1,4 +1,5 @@
 ﻿using System;
+using Autofac;
 using MyWalletLib;
 using MyWalletLib.Models;
 
@@ -44,19 +45,41 @@ namespace MyConsole
 
     internal class Program
     {
+        private static IContainer _container;
+
         private static void Main(string[] args)
         {
-            var fakeWalletRepo = new FakeWalletRepo();
-            var fakeBankingAdapter = new FakeBankingAdapter();
-            var fakeFeeAdapter = new FakeFeeAdapter();
-            var fakeLogger = new FakeLogger();
+            //var fakeWalletRepo = new FakeWalletRepo();
+            //var fakeBankingAdapter = new FakeBankingAdapter();
+            //var fakeFeeAdapter = new FakeFeeAdapter();
+            //var fakeLogger = new FakeLogger();
 
-            var wallet = new Wallet(fakeWalletRepo, fakeBankingAdapter, fakeFeeAdapter);
-            var loggerWallet = new LoggerDecorator(wallet, fakeLogger);
+            //var wallet = new Wallet(fakeWalletRepo, fakeBankingAdapter, fakeFeeAdapter);
+            //var loggerWallet = new LoggerDecorator(wallet, fakeLogger);
 
-            loggerWallet.Deposit("joey", 1000, "123456789");
+            RegisterContainer();
+
+            IWallet wallet = _container.Resolve<IWallet>();
+
+            wallet.Deposit("joey", 1000, "123456789");
             Console.WriteLine(new string('-', 50));
-            loggerWallet.Withdraw("joey", 1000, "123456789");
+            wallet.Withdraw("joey", 1000, "123456789");
+        }
+
+        private static void RegisterContainer()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterType<FakeWalletRepo>().As<IWalletRepo>();
+            builder.RegisterType<FakeBankingAdapter>().As<IBanking>();
+            builder.RegisterType<FakeFeeAdapter>().As<IFee>();
+            builder.RegisterType<FakeLogger>().As<ILogger>();
+
+            builder.RegisterType<Wallet>().As<IWallet>();
+
+            builder.RegisterDecorator<LoggerDecorator, IWallet>();
+
+            _container = builder.Build();
         }
     }
 }
