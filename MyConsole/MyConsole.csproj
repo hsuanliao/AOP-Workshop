@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interceptors\AuthorizationInterceptor.cs" />
+    <Compile Include="Interceptors\CacheInterceptor.cs" />
     <Compile Include="Interceptors\LogInterceptor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

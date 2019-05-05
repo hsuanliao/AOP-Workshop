@@ -1,4 +1,5 @@
-﻿using Autofac.Extras.DynamicProxy;
+﻿using System;
+using System.Threading;
 
 namespace MyWalletLib.Models
 {
@@ -14,6 +15,14 @@ namespace MyWalletLib.Models
             _walletRepo = walletRepo;
             _bankingAdapter = bankingAdapter;
             _feeAdapter = feeAdapter;
+        }
+
+        [Cache(Duration = 1000)]
+        public string CreateGuid(string account, int token)
+        {
+            Console.WriteLine($"sleep 1.5 seconds, account:{account}, token:{token}");
+            Thread.Sleep(1500);
+            return Guid.NewGuid().ToString("N");
         }
 
         [LogParameters]

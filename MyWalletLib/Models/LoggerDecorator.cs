@@ -11,6 +11,11 @@
             _logger = logger;
         }
 
+        public string CreateGuid(string account, int token)
+        {
+            return _wallet.CreateGuid(account, token);
+        }
+
         public void Deposit(string bankingAccount, decimal amount, string account)
         {
             LoggerMessage($"{nameof(Deposit)}: {bankingAccount}-{amount}-{account}");

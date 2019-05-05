@@ -71,8 +71,15 @@ namespace MyConsole
 
             var wallet = _container.Resolve<IWallet>();
 
+            Console.WriteLine(wallet.CreateGuid("Joey", 91));
+            Console.WriteLine(wallet.CreateGuid("Joey", 91));
+            Console.WriteLine(wallet.CreateGuid("Tom", 66));
+            Console.WriteLine(wallet.CreateGuid("Joey", 91));
+            Console.WriteLine(new string('-', 50));
+
             wallet.Deposit("joey", 1000, "123456789");
             Console.WriteLine(new string('-', 50));
+
             wallet.Withdraw("joey", 1000, "123456789");
         }
 
@@ -85,6 +92,7 @@ namespace MyConsole
             builder.RegisterType<FakeFeeAdapter>().As<IFee>();
             builder.RegisterType<FakeLogger>().As<ILogger>();
             builder.RegisterType<FakeContext>().As<IContext>();
+            builder.RegisterType<MemoryCacheProvider>().As<ICacheProvider>();
 
             //builder.RegisterType<Wallet>().As<IWallet>();
             //builder.RegisterDecorator<LoggerDecorator, IWallet>();
@@ -96,12 +104,14 @@ namespace MyConsole
 
             builder.RegisterType<LogInterceptor>();
             builder.RegisterType<AuthorizationInterceptor>();
+            builder.RegisterType<CacheInterceptor>();
             builder.RegisterType<Wallet>()
                 .As<IWallet>()
                 .EnableInterfaceInterceptors()
                 .InterceptedBy(
                     typeof(LogInterceptor),
-                    typeof(AuthorizationInterceptor));
+                    typeof(AuthorizationInterceptor),
+                    typeof(CacheInterceptor));
 
             _container = builder.Build();
         }

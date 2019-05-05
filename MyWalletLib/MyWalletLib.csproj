@@ -43,6 +43,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,12 +54,15 @@
   <ItemGroup>
     <Compile Include="Account.cs" />
     <Compile Include="AuthorizedAttribute.cs" />
+    <Compile Include="CacheAttribute.cs" />
     <Compile Include="IBanking.cs" />
+    <Compile Include="ICacheProvider.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="IFee.cs" />
     <Compile Include="ILogger.cs" />
     <Compile Include="IWalletRepo.cs" />
     <Compile Include="LogInterceptorInLib.cs" />
+    <Compile Include="MemoryCacheProvider.cs" />
     <Compile Include="Models\IWallet.cs" />
     <Compile Include="Models\LoggerDecorator.cs" />
     <Compile Include="Models\LogParametersAttribute.cs" />
