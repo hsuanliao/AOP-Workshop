@@ -17,6 +17,8 @@ namespace MyWalletLib.Models
         }
 
         [LogParameters]
+        [Authorized(UserType = UserType.VIP)]
+        [Authorized(UserType = UserType.Guest)]
         public void Deposit(string bankingAccount, decimal amount, string account)
         {
             _bankingAdapter.Deposit(bankingAccount, amount);

@@ -24,7 +24,7 @@ namespace MyConsole
     {
         public Account GetCurrentUser()
         {
-            return new Account { Id = "test" };
+            return new Account { Id = "test", UserType = UserType.Guest };
         }
     }
 
@@ -95,10 +95,13 @@ namespace MyConsole
             //    .EnableInterfaceInterceptors();
 
             builder.RegisterType<LogInterceptor>();
+            builder.RegisterType<AuthorizationInterceptor>();
             builder.RegisterType<Wallet>()
                 .As<IWallet>()
                 .EnableInterfaceInterceptors()
-                .InterceptedBy(typeof(LogInterceptor));
+                .InterceptedBy(
+                    typeof(LogInterceptor),
+                    typeof(AuthorizationInterceptor));
 
             _container = builder.Build();
         }

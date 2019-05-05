@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
+    <Compile Include="AuthorizedAttribute.cs" />
     <Compile Include="IBanking.cs" />
     <Compile Include="IContext.cs" />
     <Compile Include="IFee.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Models\LogParametersAttribute.cs" />
     <Compile Include="Models\Wallet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
