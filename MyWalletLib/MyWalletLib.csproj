@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="IBanking.cs" />
     <Compile Include="IFee.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="IWalletRepo.cs" />
     <Compile Include="Models\Wallet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

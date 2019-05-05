@@ -26,6 +26,14 @@ namespace MyConsole
         }
     }
 
+    internal class FakeLogger : ILogger
+    {
+        public void Info(string message)
+        {
+            Console.WriteLine($"[Log] {message}");
+        }
+    }
+
     internal class FakeWalletRepo : IWalletRepo
     {
         public void UpdateDelta(string account, decimal amount)
@@ -41,10 +49,12 @@ namespace MyConsole
             var fakeWalletRepo = new FakeWalletRepo();
             var fakeBankingAdapter = new FakeBankingAdapter();
             var fakeFeeAdapter = new FakeFeeAdapter();
+            var fakeLogger = new FakeLogger();
 
-            var wallet = new Wallet(fakeWalletRepo, fakeBankingAdapter, fakeFeeAdapter);
+            var wallet = new Wallet(fakeWalletRepo, fakeBankingAdapter, fakeFeeAdapter, fakeLogger);
 
             wallet.Deposit("joey", 1000, "123456789");
+            Console.WriteLine(new string('-', 50));
             wallet.Withdraw("joey", 1000, "123456789");
         }
     }
